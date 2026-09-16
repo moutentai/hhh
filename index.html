@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>场景，是福格行为模型里的哪一维？</title>
+<style>
+  :root{
+    --bg:#f6f7f9;
+    --surface:#ffffff;
+    --ink:#16181d;
+    --ink-2:#3f4652;
+    --ink-3:#6b7280;
+    --line:#e5e7eb;
+    --m:#4f46e5;
+    --m-bg:#eef0ff;
+    --a:#0891b2;
+    --a-bg:#e6f7fb;
+    --p:#d97706;
+    --p-bg:#fdf4e3;
+    --ctx:#7c5cff;
+    --ctx-bg:#f3f0ff;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:16px;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+    padding:0 20px 96px;
+  }
+
+  .wrap{max-width:860px;margin:0 auto;}
+
+  /* ---------- 头部 ---------- */
+  header{
+    padding:76px 0 52px;
+    text-align:center;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--ink-3);
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:999px;
+    padding:6px 16px;
+    margin-bottom:26px;
+  }
+
+  h1{
+    font-size:40px;
+    line-height:1.3;
+    letter-spacing:-.02em;
+    font-weight:700;
+    margin-bottom:20px;
+  }
+
+  h1 em{
+    font-style:normal;
+    background:linear-gradient(180deg,transparent 62%,var(--ctx-bg) 62%);
+    padding:0 4px;
+  }
+
+  .lede{
+    font-size:17px;
+    color:var(--ink-2);
+    max-width:620px;
+    margin:0 auto;
+  }
+
+  /* ---------- 通用区块 ---------- */
+  section{margin-bottom:56px;}
+
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin-bottom:22px;
+  }
+
+  .sec-num{
+    font-size:13px;
+    font-weight:700;
+    color:var(--ctx);
+    font-variant-numeric:tabular-nums;
+    letter-spacing:.04em;
+  }
+
+  h2{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+
+  h3{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+
+  p{margin-bottom:14px;}
+  p:last-child{margin-bottom:0;}
+
+  strong{font-weight:700;}
+
+  /* ---------- 公式卡 ---------- */
+  .formula-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:48px 32px 40px;
+    text-align:center;
+    box-shadow:0 1px 2px rgba(16,24,40,.04),0 12px 32px -18px rgba(16,24,40,.18);
+  }
+
+  .formula{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:clamp(26px,6vw,40px);
+    line-height:1.5;
+    letter-spacing:.01em;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:2px 6px;
+  }
+
+  .formula .op{color:var(--ink-3);}
+
+  .tk{
+    position:relative;
+    display:inline-block;
+    font-weight:700;
+    padding:2px 10px;
+    border-radius:8px;
+  }
+
+  .tk-m{color:var(--m);background:var(--m-bg);}
+  .tk-a{color:var(--a);background:var(--a-bg);}
+  .tk-p{color:var(--p);background:var(--p-bg);}
+  .tk-c{color:var(--ctx);background:var(--ctx-bg);}
+
+  .formula-note{
+    margin-top:28px;
+    padding-top:24px;
+    border-top:1px dashed var(--line);
+    font-size:15px;
+    color:var(--ink-2);
+    max-width:560px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .formula-note b{color:var(--ink);}
+
+  /* ---------- 容器图示 ---------- */
+  .container-viz{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:34px 28px;
+  }
+
+  .ctx-box{
+    border:2px dashed #cfc4ff;
+    background:var(--ctx-bg);
+    border-radius:18px;
+    padding:22px 20px 24px;
+    position:relative;
+  }
+
+  .ctx-label{
+    display:inline-block;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--ctx);
+    background:var(--surface);
+    border:1px solid #ddd4ff;
+    border-radius:999px;
+    padding:4px 14px;
+    margin-bottom:18px;
+  }
+
+  .chips{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+  }
+
+  .chip{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 14px;
+    text-align:center;
+  }
+
+  .chip .letter{
+    font-family:Georgia,serif;
+    font-size:30px;
+    font-weight:700;
+    line-height:1.1;
+    display:block;
+    margin-bottom:4px;
+  }
+
+  .chip .name{
+    font-size:13px;
+    color:var(--ink-3);
+    letter-spacing:.02em;
+  }
+
+  .chip.m{border-top:3px solid var(--m);} .chip.m .letter{color:var(--m);}
+  .chip.a{border-top:3px solid var(--a);} .chip.a .letter{color:var(--a);}
+  .chip.p{border-top:3px solid var(--p);} .chip.p .letter{color:var(--p);}
+
+  .viz-caption{
+    margin-top:18px;
+    font-size:14px;
+    color:var(--ink-3);
+    text-align:center;
+  }
+
+  /* ---------- 三张决定卡 ---------- */
+  .cards{display:grid;gap:16px;}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:26px 28px;
+    display:grid;
+    grid-template-columns:56px 1fr;
+    gap:20px;
+    align-items:start;
+  }
+
+  .badge{
+    width:56px;height:56px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:Georgia,serif;
+    font-size:22px;
+    font-weight:700;
+  }
+
+  .badge.m{background:var(--m-bg);color:var(--m);}
+  .badge.a{background:var(--a-bg);color:var(--a);}
+  .badge.p{background:var(--p-bg);color:var(--p);}
+
+  .card .tag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+
+  .card.m .tag{color:var(--m);}
+  .card.a .tag{color:var(--a);}
+  .card.p .tag{color:var(--p);}
+
+  .card p{font-size:15px;color:var(--ink-2);margin-bottom:8px;}
+  .card p:last-child{margin-bottom:0;}
+
+  .example{
+    font-size:14px;
+    color:var(--ink-2);
+    background:#fafbfc;
+    border-left:3px solid var(--line);
+    border-radius:0 8px 8px 0;
+    padding:10px 14px;
+    margin-top:12px;
+  }
+
+  .example b{color:var(--ink);font-weight:600;}
+
+  /* ---------- 辨析区 ---------- */
+  .contrast{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+
+  .contrast-col{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:24px;
+  }
+
+  .contrast-col.no{border-top:3px solid #ef4444;}
+  .contrast-col.yes{border-top:3px solid var(--ctx);}
+
+  .contrast-col .kicker{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+
+  .contrast-col.no .kicker{color:#dc2626;}
+  .contrast-col.yes .kicker{color:var(--ctx);}
+
+  .contrast-col p{font-size:15px;color:var(--ink-2);}
+
+  /* ---------- 案例拆解 ---------- */
+  .case{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:20px;
+    overflow:hidden;
+  }
+
+  .case-head{
+    background:#fafbfc;
+    border-bottom:1px solid var(--line);
+    padding:16px 26px;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-3);
+  }
+
+  .rows{display:grid;}
+
+  .row{
+    display:grid;
+    grid-template-columns:132px 1fr;
+    gap:18px;
+    padding:18px 26px;
+    border-bottom:1px solid var(--line);
+    align-items:baseline;
+  }
+
+  .row:last-child{border-bottom:none;}
+
+  .row .key{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+
+  .row .key small{
+    display:block;
+    font-size:12px;
+    font-weight:400;
+    letter-spacing:0;
+    text-transform:none;
+    color:var(--ink-3);
+    margin-top:2px;
+  }
+
+  .row .val{font-size:15px;color:var(--ink-2);}
+
+  .row.k-ctx .key{color:var(--ctx);}
+  .row.k-p .key{color:var(--p);}
+  .row.k-m .key{color:var(--m);}
+  .row.k-a .key{color:var(--a);}
+  .row.k-b{background:var(--ctx-bg);}
+  .row.k-b .key{color:var(--ctx);}
+  .row.k-b .val{color:var(--ink);font-weight:700;}
+
+  /* ---------- 结论 ---------- */
+  .conclusion{
+    background:#16181d;
+    color:#f4f5f7;
+    border-radius:20px;
+    padding:40px 36px;
+  }
+
+  .conclusion h2{color:#fff;margin-bottom:18px;font-size:20px;}
+
+  .conclusion p{color:#b9bfca;font-size:15.5px;margin-bottom:16px;}
+
+  .conclusion p em{
+    font-style:normal;
+    color:#fff;
+    font-weight:600;
+    background:rgba(124,92,255,.28);
+    border-radius:6px;
+    padding:1px 7px;
+  }
+
+  .conclusion .divider{
+    height:1px;
+    background:rgba(255,255,255,.12);
+    margin:26px 0;
+  }
+
+  .checklist{display:grid;gap:12px;}
+
+  .check{
+    display:grid;
+    grid-template-columns:26px 1fr;
+    gap:14px;
+    align-items:baseline;
+    font-size:15px;
+    color:#d6dae1;
+  }
+
+  .check .n{
+    font-family:Georgia,serif;
+    font-weight:700;
+    color:#a78bfa;
+    font-size:15px;
+  }
+
+  .check b{color:#fff;font-weight:600;}
+
+  footer{
+    text-align:center;
+    font-size:13px;
+    color:var(--ink-3);
+    padding-top:8px;
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width:640px){
+    body{padding:0 16px 64px;}
+    header{padding:52px 0 36px;}
+    h1{font-size:28px;}
+    .lede{font-size:15.5px;}
+    .formula-card{padding:34px 18px 28px;}
+    .container-viz{padding:22px 18px;}
+    .chips{grid-template-columns:1fr;gap:10px;}
+    .chip{display:flex;align-items:center;gap:14px;text-align:left;padding:14px 16px;}
+    .chip .letter{margin-bottom:0;font-size:24px;}
+    .card{grid-template-columns:1fr;gap:14px;padding:22px 20px;}
+    .badge{width:44px;height:44px;font-size:18px;border-radius:12px;}
+    .contrast{grid-template-columns:1fr;}
+    .row{grid-template-columns:1fr;gap:6px;padding:16px 20px;}
+    .conclusion{padding:30px 22px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">行为设计 · 概念澄清</span>
+    <h1>场景，是福格行为模型里的<br><em>哪一维</em>？</h1>
+    <p class="lede">场景不是公式里的独立字母，它被拆进了 M、A、P 里——但同时又容着它们、调着它们。</p>
+  </header>
+
+  <!-- 1. 公式 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2>先看公式</h2>
+    </div>
+
+    <div class="formula-card">
+      <div class="formula">
+        <span class="op">B =</span>
+        <span class="op">f (</span>
+        <span class="tk tk-m">M</span>
+        <span class="op">,</span>
+        <span class="tk tk-a">A</span>
+        <span class="op">,</span>
+        <span class="tk tk-p">P</span>
+        <span class="op">|</span>
+        <span class="tk tk-c">Context</span>
+        <span class="op">)</span>
+      </div>
+      <p class="formula-note">
+        行为 <b>B</b>，是动机 <b>M</b>、能力 <b>A</b>、提示 <b>P</b> 在特定场景下的结果。<br>
+        场景不是第四个变量，而是括号里那个 <b>“|”</b> 之后的条件。
+      </p>
+    </div>
+  </section>
+
+  <!-- 2. 容器图示 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2>场景是容器，也是调节器</h2>
+    </div>
+
+    <div class="container-viz">
+      <div class="ctx-box">
+        <span class="ctx-label">Context · 场景</span>
+        <div class="chips">
+          <div class="chip m">
+            <span class="letter">M</span>
+            <span class="name">动机</span>
+          </div>
+          <div class="chip a">
+            <span class="letter">A</span>
+            <span class="name">能力</span>
+          </div>
+          <div class="chip p">
+            <span class="letter">P</span>
+            <span class="name">提示</span>
+          </div>
+        </div>
+      </div>
+      <p class="viz-caption">M、A、P 三个变量，全都发生在某一个具体场景里。</p>
+    </div>
+  </section>
+
+  <!-- 3. 场景决定什么 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2>场景分别在调节什么</h2>
+    </div>
+
+    <div class="cards">
+
+      <div class="card p">
+        <div class="badge p">P</div>
+        <div>
+          <span class="tag">决定 · 提示能不能出现</span>
+          <h3>场景决定 Prompt 能不能出现</h3>
+          <p>比如"睡前刷牙"，场景是<b>睡前 + 卫生间</b>。提示可能是闹钟、伴侣提醒、牙刷的位置。</p>
+          <div class="example"><b>P 是那个提示</b>，不是场景本身。</div>
+        </div>
+      </div>
+
+      <div class="card a">
+        <div class="badge a">A</div>
+        <div>
+          <span class="tag">决定 · 能力够不够</span>
+          <h3>场景决定 Ability 够不够</h3>
+          <p>在地铁里想扫码，但没信号，能力就不够；在办公室有 Wi-Fi，能力就够了。</p>
+          <div class="example">同一条扫码路径，<b>换个场景，能力判定就翻转</b>。</div>
+        </div>
+      </div>
+
+      <div class="card m">
+        <div class="badge m">M</div>
+        <div>
+          <span class="tag">决定 · 动机强不强</span>
+          <h3>场景决定 Motivation 强不强</h3>
+          <p>饿了的时候点外卖动机强；刚吃饱动机就弱。同一个人，不同场景，M 完全不同。</p>
+          <div class="example">动机不是人的固有属性，<b>是场景状态下的产物</b>。</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 4. 辨析 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2>一个常见误解：P ≠ 场景</h2>
+    </div>
+
+    <div class="contrast">
+      <div class="contrast-col no">
+        <span class="kicker">误解</span>
+        <p>很多人以为 <strong>P = 场景</strong>，把提示和它发生的背景混为一谈。</p>
+      </div>
+      <div class="contrast-col yes">
+        <span class="kicker">实际</span>
+        <p><strong>P 是提示 / 触发</strong>，场景是提示发生的<strong>背景</strong>。两者是容器与内容的关系。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 案例 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2>案例拆解：等电梯的那一刻</h2>
+    </div>
+
+    <div class="case">
+      <div class="case-head">Scene → Behavior 逐项对照</div>
+      <div class="rows">
+
+        <div class="row k-ctx">
+          <div class="key">场景<small>Context</small></div>
+          <div class="val">用户正在等电梯</div>
+        </div>
+
+        <div class="row k-p">
+          <div class="key">提示<small>P</small></div>
+          <div class="val">电梯口广告屏弹出"扫码领券"</div>
+        </div>
+
+        <div class="row k-m">
+          <div class="key">动机<small>M</small></div>
+          <div class="val">用户想省钱</div>
+        </div>
+
+        <div class="row k-a">
+          <div class="key">能力<small>A</small></div>
+          <div class="val">扫码路径很短，有网络</div>
+        </div>
+
+        <div class="row k-b">
+          <div class="key">行为<small>B</small></div>
+          <div class="val">扫码领券</div>
+        </div>
+
+      </div>
+    </div>
+
+    <p style="margin-top:18px;font-size:15px;color:var(--ink-2)">
+      这里"等电梯"是场景，<strong>"广告屏弹券"才是 P</strong>。
+    </p>
+  </section>
+
+  <!-- 6. 结论 -->
+  <section style="margin-bottom:0">
+    <div class="conclusion">
+      <h2>所以，结论是——</h2>
+      <p>福格行为模型<em>没有"场景"这个变量</em>，但场景是 M、A、P 的<em>容器和调节器</em>。</p>
+      <div class="divider"></div>
+      <p style="margin-bottom:20px">做行为设计时的顺序：<strong style="color:#fff">先定场景，再问三件事。</strong></p>
+      <div class="checklist">
+        <div class="check"><span class="n">1</span><span>这个场景下，<b>动机够吗？</b></span></div>
+        <div class="check"><span class="n">2</span><span>这个场景下，<b>能力难吗？</b></span></div>
+        <div class="check"><span class="n">3</span><span>这个场景下，<b>提示有吗？</b></span></div>
+      </div>
+      <div class="divider"></div>
+      <p style="margin-bottom:0">三者缺一，行为就不会发生。</p>
+    </div>
+  </section>
+
+  <footer style="margin-top:48px">
+    Fogg Behavior Model · B = MAP ｜ 场景作为 Context 的理解框架
+  </footer>
+
+</div>
+</body>
+</html>
