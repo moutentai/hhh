@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>页面 C · 关于本站</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar">
+  <a class="brand" href="index.html">hhh<span>.</span></a>
+  <div class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="a.html">页面 A</a>
+    <a href="b.html">页面 B</a>
+    <a href="c.html" class="active">页面 C</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Page C</span>
+    <h1>关于本站</h1>
+    <p class="lede">这是一个用于演示"多页面导航"结构的示例站点。</p>
+  </header>
+
+  <section class="section">
+    <div class="card" style="display:block">
+      <h3 style="margin-bottom:12px">站点说明</h3>
+      <p style="color:var(--ink-2);font-size:15px;margin-bottom:12px">本站由四个页面组成，共享同一套样式（style.css）：</p>
+      <ul style="color:var(--ink-2);font-size:15px;padding-left:20px;line-height:2">
+        <li><b>首页（index.html）</b>：索引页，提供通往 A / B / C 的导航。</li>
+        <li><b>页面 A</b>：一篇完整的案例文章。</li>
+        <li><b>页面 B</b>：交互组件演示。</li>
+        <li><b>页面 C</b>：本页，站点说明。</li>
+      </ul>
+      <p style="margin-top:16px"><a class="btn btn-primary" href="index.html">← 返回首页</a></p>
+    </div>
+  </section>
+
+  <footer>hhh Demo · <a href="index.html">返回首页</a></footer>
+</div>
+</body>
+</html>
